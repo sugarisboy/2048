@@ -1,46 +1,62 @@
 export const moveToRight = (tiles) => {
-  const updatedTiles = tiles.map(row => moveToRightRow(row))
+  const updatedRowsWithScores = tiles.map(row => moveToRightRowAndReturnScores(row))
+  const updatedTiles = updatedRowsWithScores.map(rowWithScore => rowWithScore.updatedRow)
+  const updatedScores = updatedRowsWithScores.map(rowWithScore => rowWithScore.scoreRow)
+    .reduce((prevValue, currentValue) => prevValue + currentValue, 0)
+
   console.log('Обновленная таблица ', updatedTiles)
-  return updatedTiles
+  return {
+    tiles: updatedTiles,
+    score: updatedScores
+  }
 }
 
-export const moveToRightRow = (row) => {
+export const moveToRightRowAndReturnScores = (row) => {
   //console.log('Список элементов к смещению вправо', row)
   const rowWithoutZero = row.filter(i => i !== 0)
-  const mergedRowWithoutZero = mergeEqualsTiles(rowWithoutZero)
+  const {updatedRow, scoreRow} = mergeEqualsTiles(rowWithoutZero)
 
-  while (mergedRowWithoutZero.length < 4) {
-    mergedRowWithoutZero.unshift(0)
+  while (updatedRow.length < 4) {
+    updatedRow.unshift(0)
   }
 
-  return mergedRowWithoutZero
+  return {
+    updatedRow: updatedRow,
+    scoreRow: scoreRow
+  }
 }
 
 export const mergeEqualsTiles = (row) => {
+  let scoreRow = 0
   for (let i = row.length - 1; i > 0; i--) {
     if (row[i] === row[i - 1]) {
       row[i] = row[i] * 2
       row[i - 1] = 0
+
+      scoreRow += row[i]
     }
   }
-  return row.filter(i => i !== 0)
+  return {
+    updatedRow: row.filter(i => i !== 0),
+    scoreRow: scoreRow
+  }
 }
 
 export const generateRandomTiles = (tiles) => {
   const emptyTiles = tiles.flatMap((row, rowIndex) =>
-  row.map((value, columnIndex) => (
-      {rowIndex: rowIndex, columnIndex: columnIndex, value: value}
-    )
-  )).filter(i => i.value === 0)
+    row.map((value, columnIndex) => (
+        {rowIndex: rowIndex, columnIndex: columnIndex, value: value}
+      )
+    )).filter(i => i.value === 0)
 
-const newTileValue = getRandomInt(10) === 0 ? 4 : 2
-const randomIndex = getRandomInt(emptyTiles.length)
-const targetTile = emptyTiles[randomIndex]
-tiles[targetTile.rowIndex][targetTile.columnIndex] = newTileValue
+  if (emptyTiles.length !== 0) {
+    const newTileValue = getRandomInt(10) === 0 ? 4 : 2
+    const randomIndex = getRandomInt(emptyTiles.length)
+    const targetTile = emptyTiles[randomIndex]
+    tiles[targetTile.rowIndex][targetTile.columnIndex] = newTileValue
+  }
 
-
-console.log(emptyTiles)
-return tiles
+  return tiles
 }
 
 const getRandomInt = (max) => {
@@ -57,8 +73,6 @@ export const generateStartTiles = () => {
   ]
   return generateRandomTiles(generateRandomTiles(nullMatrix))
 }
-
-
 
 export const rotateMatrix = (matrix) => {
   return matrix[0].map((val, index) => matrix.map(row => row[index]).reverse())
