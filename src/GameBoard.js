@@ -4,7 +4,7 @@ import {moveToRight} from "./service";
 
 const GameBoard = () => {
   let [tiles, setTiles] = useState([
-    [0, 2, 4, 8],
+    [0, 2, 2, 4],
     [16, 32, 64, 128],
     [256, 512, 1024, 2048],
     [0, 0, 0, 0]
