@@ -6,7 +6,7 @@ const Tile = (props) => {
 
   return (
     <div className="tiles" style={styles}>
-      {value}
+      {value !== 0 && value}
     </div>
   )
 }

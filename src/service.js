@@ -27,17 +27,38 @@ export const mergeEqualsTiles = (row) => {
 }
 
 export const generateRandomTiles = (tiles) => {
+  const emptyTiles = tiles.flatMap((row, rowIndex) =>
+  row.map((value, columnIndex) => (
+      {rowIndex: rowIndex, columnIndex: columnIndex, value: value}
+    )
+  )).filter(i => i.value === 0)
 
+const newTileValue = getRandomInt(10) === 0 ? 4 : 2
+const randomIndex = getRandomInt(emptyTiles.length)
+const targetTile = emptyTiles[randomIndex]
+tiles[targetTile.rowIndex][targetTile.columnIndex] = newTileValue
+
+
+console.log(emptyTiles)
+return tiles
 }
+
+const getRandomInt = (max) => {
+  return Math.floor(Math.random() * max)
+}
+
 
 export const generateStartTiles = () => {
-  return [
-    [0, 2, 2, 4],
-    [2, 2, 4, 8],
-    [2, 2, 0, 4],
-    [2, 2, 2, 2]
+  const nullMatrix = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
   ]
+  return generateRandomTiles(generateRandomTiles(nullMatrix))
 }
+
+
 
 export const rotateMatrix = (matrix) => {
   return matrix[0].map((val, index) => matrix.map(row => row[index]).reverse())
