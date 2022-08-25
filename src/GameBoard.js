@@ -1,15 +1,13 @@
 import Tile from "./Tile";
 import React, {useEffect, useState} from "react";
-import {generateRandomTiles, generateStartTiles, moveToRight, rotateMatrix} from "./service";
+import {generateRandomTiles, getClearGameState, moveToRight, getRestartGameState, rotateMatrix} from "./service";
 import Scores from "./Scores";
+import RestartButton from "./RestartButton";
 
 const GameBoard = () => {
-  let [gameState, setGameState] = useState({
-    score: 0,
-    tiles: generateStartTiles()
-  })
+  let [gameState, setGameState] = useState(getClearGameState())
 
-  const {tiles, score} = gameState
+  const {tiles, score, maxScore} = gameState
 
   useEffect(() => {
     const callback = (event) => setGameState(calculateNewTileMatrix(event, gameState))
@@ -19,8 +17,12 @@ const GameBoard = () => {
 
   return (
     <div className="gameboard">
-      <Scores value={score}/>
-      <div>
+      <div className="gameboard-header">
+        <Scores score={score} maxScore={maxScore}/>
+        <RestartButton onClick={() => setGameState(getRestartGameState(gameState))}/>
+      </div>
+
+      <div className="gameboard-board">
         {
           tiles.map((row, rowIndex) => (
             <div className="gameboard-row" key={rowIndex}>
@@ -37,6 +39,8 @@ const GameBoard = () => {
 
 const calculateNewTileMatrix = (event, gameState) => {
   let newScore = gameState.score
+
+  const {maxScore} = gameState
 
   const moveToRightAndUpdateScores = (sourceTiles) => {
     const {tiles, score} = moveToRight(sourceTiles)
@@ -55,7 +59,8 @@ const calculateNewTileMatrix = (event, gameState) => {
   if (listFunction) {
     return {
       tiles: listFunction.reduce((prevValue, currentFunction) => currentFunction(prevValue), gameState.tiles),
-      score: newScore
+      score: newScore,
+      maxScore: newScore > maxScore ? newScore : maxScore
     }
   } else {
     return gameState

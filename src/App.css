@@ -1,5 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
 .App {
     display: flex;
+    font-family: 'Russo One', sans-serif;
+    color: white;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px #606060;
 }
 
 .gameboard {
@@ -8,21 +14,54 @@
     flex-direction: column;
 }
 
+.gameboard-header {
+    padding: 16px;
+    background-color: chocolate;
+    border-radius: 10px;
+    margin: 16px 0;
+    display: flex;
+}
+
+.gameboard-board {
+    padding: 16px;
+    background-color: chocolate;
+    border-radius: 10px;
+}
+
 .gameboard-row {
     display: flex;
     flex-direction: row;
 }
 
 .scores {
-    margin: 24px 8px;
     font-size: 24px;
     font-weight: bold;
+    display: flex;
+    flex-direction: row;
 }
 
-.tiles {
+.restart-button {
+    background: url("/public/restart.png");
+    width: 64px;
+    height: 64px;
+    background-size: cover;
+    margin-left: auto;
+    cursor: pointer;
+    transition-duration: 400ms;
+}
+
+.restart-button:hover {
+    transform: rotate(-270deg);
+}
+
+.tile {
     width: 128px;
     height: 128px;
     margin: 8px;
     text-align: center;
-    font-size: 48px;
+    font-size: 36px;
+    transition-property: transform;
+    transition-duration: 100ms;
+    font-weight: bold;
+    border-radius: 10px;
 }

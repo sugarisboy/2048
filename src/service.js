@@ -59,19 +59,33 @@ export const generateRandomTiles = (tiles) => {
   return tiles
 }
 
-const getRandomInt = (max) => {
+export const getRandomInt = (max) => {
   return Math.floor(Math.random() * max)
 }
-
 
 export const generateStartTiles = () => {
   const nullMatrix = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ]
   return generateRandomTiles(generateRandomTiles(nullMatrix))
+}
+
+export const getClearGameState = () => {
+  return {
+    score: 0,
+    maxScore: 0,
+    tiles: generateStartTiles()
+  }
+}
+
+export const getRestartGameState = (gameState) => {
+  return {
+    ...getClearGameState(),
+    maxScore: gameState.maxScore
+  }
 }
 
 export const rotateMatrix = (matrix) => {
