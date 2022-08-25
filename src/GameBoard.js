@@ -1,38 +1,15 @@
 import Tile from "./Tile";
 import React, {useEffect, useState} from "react";
-import {moveToRight} from "./service";
+import {generateRandomTiles, generateStartTiles, moveToRight, rotateMatrix} from "./service";
 
 const GameBoard = () => {
-  let [tiles, setTiles] = useState([
-    [0, 2, 2, 4],
-    [16, 32, 64, 128],
-    [256, 512, 1024, 2048],
-    [0, 0, 0, 0]
-  ])
+  let [tiles, setTiles] = useState(generateStartTiles())
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown)
-  }, [])
-
-  const handleKeyDown = (event) => {
-    switch (event.keyCode) {
-      case 37:
-        console.log('left arrow activated')
-        break;
-      case 38:
-        console.log('up arrow activated')
-        break;
-      case 39:
-        console.log('right arrow activated')
-        setTiles(moveToRight(tiles))
-        break;
-      case 40:
-        console.log('down arrow activated')
-        break;
-      default:
-        break;
-    }
-  }
+    const callback = (event) => setTiles(calculateNewTileMatrix(event, tiles))
+    document.addEventListener("keyup", callback)
+    return () => document.removeEventListener("keyup", callback)
+  }, [tiles])
 
   return (
     <div className="gameboard">
@@ -47,6 +24,22 @@ const GameBoard = () => {
       }
     </div>
   )
+}
+
+const calculateNewTileMatrix = (event, tiles) => {
+  const keyCodeToListFunction = {
+    37: [rotateMatrix, rotateMatrix, moveToRight, rotateMatrix, rotateMatrix, generateRandomTiles], // LEFT
+    38: [rotateMatrix, moveToRight, rotateMatrix, rotateMatrix, rotateMatrix, generateRandomTiles], // UP
+    39: [moveToRight, generateRandomTiles], // RIGHT
+    40: [rotateMatrix, rotateMatrix, rotateMatrix, moveToRight, rotateMatrix, generateRandomTiles]  // DOWN
+  }
+
+  const listFunction = keyCodeToListFunction[event.keyCode]
+  if (listFunction) {
+    return listFunction.reduce((prevValue, currentFunction) => currentFunction(prevValue), tiles)
+  } else {
+    return tiles
+  }
 }
 
 export default GameBoard

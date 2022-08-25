@@ -1,10 +1,12 @@
 const Tile = (props) => {
   const {value} = props
-  const log2value = log2(value)
+  const log2value = value === 0 ? 0 : log2(value)
+
+  const styles = {background: `rgb(123, ${228 - log2value * 8}, ${196 - log2value * 8})`}
 
   return (
-    <div className="tiles" style={{background: `rgb(123, ${228 - log2value * 4}, ${196 - log2value * 4})`}}>
-      {value !== 0 && value}
+    <div className="tiles" style={styles}>
+      {value}
     </div>
   )
 }
